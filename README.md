@@ -3,7 +3,7 @@
 
 ## Scope
 
-This database includes the necessary entities to track workers, machinery, fields, seeds, fertilisers, and yields within a small farming enterprise. As such, the database scope includes:
+This database, designed for CS50 SQL, includes the necessary entities to track workers, machinery, fields, seeds, fertilisers, and yields within a small farming enterprise. As such, the database scope includes:
 
 * Employees, basic identifying information about employees.
 * Salaries, annual compensation records for personel.
@@ -36,7 +36,7 @@ The database include the following entities:
 
 #### Employees
 
-The `employyes` table include:
+The `employyes` table includes:
 
 * `id`, which specifies a unique identifier for the worker as an `INTEGER`. The `PRIMARY KEY` constraint is applied to this column,
 * `first_name`, which specifies the worker's first name as `TEXT`, because `TEXT` is appropriate to store information in name fields. `NOT NULL` constraint ensures that this field is not empty.
@@ -47,7 +47,7 @@ The `employyes` table include:
 
 #### Salaries
 
-The `salaries` table include:
+The `salaries` table includes:
 
 * `id`, which specifies a unique identifier for the salary record as an `INTEGER`. `PRIMARY KEY` is applied,
 * `employee_id`, which represents ID of the worker recieved this salary, stored as an `INTEGER`. `FOREIG KEY` is applied to ensure data integrity with `employees` table via the `id` column,
@@ -56,7 +56,7 @@ The `salaries` table include:
 
 #### Vehicles
 
-The `vehicles` table include:
+The `vehicles` table includes:
 
 * `id`, which specifies unique identifier of the vehicle owned, stored as an `INTEGER` with `PRIMARY KEY` constraint applied,
 * `model`, which specifies the full name of the vehicle as `TEXT`. The `NOT NULL` constraint ensures that each vehicle has a defined model name,
@@ -67,6 +67,9 @@ The `vehicles` table include:
 * `sell_date`, which specifies the date the vehicle being sold as `NUMBERIC`. `NULL` is applied by default for the same reason.
 
 #### Fuel
+
+The `fuel` table includes:
+
 * `id`, which specifies the unique fuel identifier, stored as an `INTEGER` with the `PRIMARY KEY` constraint applied.
 * `type`, which specifies the fuel type, stored as `TEXT`. A `CHECK` constraint is applied to ensure that the value is one of the fuel types used by the farm.
 * `amount`, which specifies the available amount of fuel as an `INTEGER`. A `CHECK` constraint ensures that the amount is always greater than or equal to zero.
@@ -74,6 +77,8 @@ The `vehicles` table include:
 All columns in the `fuel` table are required and therefore have the `NOT NULL` constraint applied.
 
 #### Repairs
+
+The `repairs` table includes:
 
 * `id`, which specifies unique identifier of the repair as an `INTEGER`. The `PRIMARY KEY` constraint is applied,
 * `vehicle_id`, which represents the vehicle being undergoing repair as an `INTEGER`. The `FOREIGN KEY` constraint is applied to ensure data integrity with `vehicles` table via `id` column,
@@ -83,7 +88,8 @@ All columns in the `fuel` table are required and therefore have the `NOT NULL` c
 
 #### Fields
 
-The `fields` table include:
+The `fields` table includes:
+
 * `id`, which specifies unique identifier of the field as an `INTEGER`. Thus `PRIMARY KEY` constraint is applied,
 * `name`, which specifies the name of the field as `TEXT` with `NOT NULL` AND `UNIQUE` constraints that ensure that each field record is not empty and has a defined name,
 * `area`, which specifies the size of the field in sqared meteres as `INTEGER`, The `NOT NULL` constraint ensures that the field size is always recorded,
@@ -94,7 +100,7 @@ The `fields` table include:
 
 #### Crops
 
-The `crops` table include:
+The `crops` table includes:
 
 * `id`, which specifies unique identifier of the crop as an `INTEGER` with `PRIMARY KEY` constraint applied,
 * `name`, which specifies the name of the crop as `TEXT`,
@@ -105,7 +111,7 @@ All columns in the `crops` table are required and hence should have the `NOT NUL
 
 #### Fertilisers
 
-The `fertilisers` table include:
+The `fertilisers` table includes:
 
 * `id`, which specifies unique fertiliser identifier as an `INTEGER` with `PRIMARY KEY` constraint applied,
 * `name`, which specifies the name of the fertiliser as `TEXT`,
@@ -116,7 +122,7 @@ All columns in the `fertilisers` table are required and hence should have the `N
 
 #### Yields
 
-The `yields` table include:
+The `yields` table includes:
 
 * `id`, which specifies unique identifier for each yield collection as an `INTEGER`. The `PRIMARY KEY` constraint is applied,
 * `shift_id`, which represents the identifier of the shift collected the yield as `INTEGER` with `FOREIGN KEY` constraint applied to ensure the data integrity with `shifts` table via `id` column,
@@ -124,11 +130,70 @@ The `yields` table include:
 * `year`, which specifies the year of the yield being collected as an `INTEGER`,
 All columns in the `yields` table are required and hence should have the `NOT NULL` constraint applied.
 
+Apart from main entities, the database include several join-tables that ensures data integrity:
+
+#### Fuel Used
+
+The `fuel_used` table includes:
+
+* `id`, which specifies the unique identifier of the vehicle refuelling operation as an `INTEGER` with the `PRIMARY KEY` constraint applied,
+* `vehicle_id`, which specifies the identifier of the vehicle being refuelled as an `INTEGER`. The `FOREIGN KEY` constraint is applied to ensure data integrity with the `vehicles` table via the `id` column,
+* `fuel_id`, which specifies the identifier of the fuel type used during the refuelling as an `INTEGER`. The `FOREIGN KEY` constraint is applied to ensure data integrity with the `fuel` table via the `id` column,
+* `amount`, which specifies the quantity of fuel added to the vehicle, expressed in litres as an `INTEGER`. The `NOT NULL` constraint ensures that the refuel quantity is always recorded,
+* `date`, which specifies the date and time of the refuelling operation as `NUMERIC`. The default value is `CURRENT_TIMESTAMP`, indicating when the refuelling entry was created.
+
+#### Shifts
+
+The `shifts` table includes:
+
+* `id`, which specifies the unique shift identifier as an `INTEGER` with the `PRIMARY KEY` constraint applied,
+* `field_id`, which specifies the identifier of the field on which the work is performed as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `fields` table via the `id` column,
+* `vehicle_id`, which specifies the identifier of the vehicle used during the shift as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `vehicles` table via the `id` column,
+* `employee_id`, which specifies the identifier of the employee who performed the work as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `employees` table via the `id` column,
+* `work_type`, which specifies the type of work performed during the shift as `TEXT`. The `NOT NULL` constraint ensures that each shift has a defined work category,
+* `date`, which specifies the date of the shift as `NUMERIC` with `NOT NULL` costraint applied. The default value is `CURRENT_DATE`, indicating the date when the shift record was created.
+
+#### Seeded Crops
+
+The `seeded_crops` table includes:
+
+* `id`, which specifies the unique identifier of a seeding operation as an `INTEGER` with the `PRIMARY KEY` constraint applied,
+* `crop_id`, which specifies the identifier of the crop being seeded during this operation as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `crops` table via the `id` column,
+* `shift_id`, which specifies the identifier of the shift during which the seeding occurred as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `shifts` table via the `id` column,
+* `quantity`, which specifies the quantity of seeds used, expressed in kilograms as an `INTEGER`. The `NOT NULL` constraint ensures that the seeded amount is always recorded.
+
+#### Fertiliser Applied
+
+The `fertilisers_applied` table includes:
+
+* `id`, which specifies the unique identifier of a fertilising operation as an `INTEGER` with the `PRIMARY KEY` constraint applied,
+* `fertiliser_id`, which specifies the identifier of the fertiliser applied during this operation as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `fertilisers` table via the `id` column,
+* `shift_id`, which specifies the identifier of the shift during which the fertiliser was applied as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `shifts` table via the `id` column,
+* `amount`, which specifies the amount of fertiliser applied, expressed in kilograms as an `INTEGER`. The `NOT NULL` constraint ensures that the applied amount is always present.
+
+#### Parts Kit
+
+The `parts_kit` table includes:
+
+* `id`, which specifies the unique identifier of the parts‑usage record as an `INTEGER` with the `PRIMARY KEY` constraint applied,
+* `repair_id`, which specifies the identifier of the repair operation in which the parts were used as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `repairs` table via the `id` column,
+* `part_id`, which specifies the identifier of the spare part used during the repair as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `spare_parts` table via the `id` column,
+* `quantity`, which specifies the number of units of the spare part used, expressed as an `INTEGER`. The `NOT NULL` constraint ensures that the consumed quantity is always recorded.
+
+#### Yields Stored
+
+The `yields_stored` table includes:
+
+* `id`, which specifies the unique identifier of the storage operation as an `INTEGER` with the `PRIMARY KEY` constraint applied,
+* `yield_id`, which specifies the identifier of the yield being stored as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `yields` table via the `id` column,
+* `storage_id`, which specifies the identifier of the storage unit in which the yield is placed as an `INTEGER`. The `FOREIGN KEY` constraint ensures data integrity with the `storages` table via the `id` column,
+* `quantity`, which specifies the amount of yield stored, expressed in kilograms as an `INTEGER`. The `NOT NULL` constraint ensures that the stored quantity is always present.
+
 ### Relationships
 
 The below entity-relationship diagram represents the relationships among the entities in the database.
 
-![ER diagram](https://drive.google.com/file/d/1-l5K0UQeSt7P6vE9_Tfo4ocb1vrTxk1g/view?usp=sharing)
+![ER diagram](diagram.png)
 
 As described by the diagram:
 
@@ -154,13 +219,16 @@ To ensure proper representation of the enterprise’s current assets and to spee
 * `assets`, which calculates the total value of assets across the categories: `vehicles`, `fuel`, `fields`, `crops`, `fertilisers`, `spare_parts` and `storages`.
 
 To speed up data updates and ensure data integrity between tables, the following triggers are implemented:
-* `after_refill_fuel_update, which automatically subtracts the amount of fuel used for refill from the total available amount of that fuel.
+* `after_refuel_fuel_update`, which automatically subtracts the amount of fuel used for refuel from the total available amount of that fuel.
 * `after_seeded_crops_update`, which automatically subtracts the quantity of seeds sown from the total available amount of that crop.
 * `after_applied_fertilisers_update`, which automatically subtracts the quantity of fertilisers used from the total available amount of that fertiliser.
-• `after_usage_parts_update`, which automatically subtracts the quantity of parts used from the total available quantity of those parts.
-• `yields_stored_insert_check`, which verifies that the selected storage unit has sufficient free capacity to hold the specified quantity of yield.
-• `after_sell_storage_update`, which automatically subtracts the quantity of sold yield from the available quantity of that yield type stored in the corresponding storage units.
+* `after_usage_parts_update`, which automatically subtracts the quantity of parts used from the total available quantity of those parts.
+* `yields_stored_insert_check`, which verifies that the selected storage unit has sufficient free capacity to hold the specified quantity of yield.
+* `after_sell_storage_update`, which automatically subtracts the quantity of sold yield from the available quantity of that yield type stored in the corresponding storage units.
+
+To speed up searches, indexes are created on the `vehicles`.`model`, `fields`.`name`, and `shifts`.`date` columns.
 
 ## Limitations
-The current schema assumes that all numeric values are stored as integers. To represent fractional numbers, it is necessary to either: 1) store values as whole numbers by rounding them up, 2) store values in smaller units of measurement, such as cents instead of euros, or 3) change the data type to REAL. At present, the first approach is used.
-The current version of the schema does not provide the ability to track cash flow or represent the farm’s financial balance. Implementing such functionality would require introducing several additional tables, views, and triggers.
+
+The current schema assumes that all numeric values (numbers) are stored as integers, which prevents representing fractional quantities unless values are rounded up, stored in smaller units (such as cents instead of euros), or the data type is changed to `REAL`. In addition, the schema does not support recording purchase history for fuel, crops, or fertilisers, nor does it provide mechanisms for tracking cash flow or representing the farm’s financial balance-functionality that would require additional tables, views, and triggers.
+
